@@ -1,11 +1,8 @@
-console.log("'CRUD API Start'");
-{
-  console.log('in block');
-}
-
-const a = (asd: number, bsd: number): void => {
-    console.log(asd + bsd );
-    
-}
-
-a(2, 4);
+import http from 'http';
+http
+  .createServer(function (_, response) {
+    response.end('Hello Node JS!');
+  })
+  .listen(3000, '127.0.0.1', function () {
+    console.log(' Server listen port 3000');
+  });

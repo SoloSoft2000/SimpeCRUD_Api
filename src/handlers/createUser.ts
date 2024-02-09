@@ -11,7 +11,7 @@ export const createUser = (request: http.IncomingMessage, response: http.ServerR
       const { username, age, hobbies } = JSON.parse(requestBody);
       if (!username || !age || !hobbies) {
         response.writeHead(400, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ message: 'Username, age, and hobbies are required' }));
+        response.end(JSON.stringify({ message: 'Username, age, and hobbies (array) are required' }));
       } else {
         const newUser = db.createUser({ username, age, hobbies });
         response.writeHead(201, { 'Content-Type': 'application/json' });
@@ -19,7 +19,7 @@ export const createUser = (request: http.IncomingMessage, response: http.ServerR
       }
     } catch (error) {
       response.writeHead(400, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ message: 'Username, age, and hobbies are required' }));
+      response.end(JSON.stringify({ message: 'Username, age, and hobbies (array) are required' }));
     }
   });
 };

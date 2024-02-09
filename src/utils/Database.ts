@@ -1,6 +1,6 @@
 import { v4 as uuidv4, validate } from 'uuid';
 
-interface User {
+export interface User {
   id: string;
   username: string;
   age: number;
@@ -44,6 +44,22 @@ export class Database {
     } else {
       this.users.splice(idx, 1);
       return true;
+    }
+  }
+
+  updateById(userId: string, userData: Partial<User>): User | undefined {
+    if (!validate(userId)) {
+      throw new Error('Invalid userId');
+    }
+    const idx = this.users.findIndex((user) => user.id === userId);
+    if (idx === -1) {
+      return undefined;
+    } else {
+      this.users[idx] = {
+        ...this.users[idx],
+        ...userData,
+      };
+      return this.users[idx];
     }
   }
 }

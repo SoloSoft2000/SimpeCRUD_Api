@@ -24,14 +24,20 @@ export const updateUser = (
       if (hobbies && Array.isArray(hobbies)) {
         updatedFields.hobbies = hobbies;
       }
-      const updatedUser = db.updateById(params, updatedFields);
 
-      if (updatedUser) {
-        response.writeHead(200, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify(updatedUser));
+      if (Object.keys(updatedFields).length) {
+        const updatedUser = db.updateById(params, updatedFields);
+
+        if (updatedUser) {
+          response.writeHead(200, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify(updatedUser));
+        } else {
+          response.writeHead(404, { 'Content-Type': 'application/json' });
+          response.end(JSON.stringify({ message: "User doesn't exist" }));
+        }
       } else {
-        response.writeHead(404, { 'Content-Type': 'application/json' });
-        response.end(JSON.stringify({ message: "User doesn't exist" }));
+        response.writeHead(400, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify({ message: 'No fields to update' }));
       }
     } catch {
       response.writeHead(400, { 'Content-Type': 'application/json' });

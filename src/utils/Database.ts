@@ -1,4 +1,4 @@
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate } from 'uuid';
 
 interface User {
   id: string;
@@ -19,8 +19,11 @@ export class Database {
   }
 
   getUserById(userId: string): User | undefined {
-    return this.users.find(user => user.id === userId);
-  };
+    if (!validate(userId)) {
+      throw new Error('Invalid userId');
+    }
+    return this.users.find((user) => user.id === userId);
+  }
 
   createUser(userData: Omit<User, 'id'>): User {
     const newUser: User = {
@@ -29,5 +32,5 @@ export class Database {
     };
     this.users.push(newUser);
     return newUser;
-  };
+  }
 }

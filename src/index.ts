@@ -2,7 +2,8 @@ import http from 'http';
 import { Database } from './utils/Database';
 import { Route } from './utils/Route';
 import { usersHandlers } from './handlers/usersHandlers';
-import { userByIdHandlers } from './handlers/userbyId';
+import { createUser } from './handlers/createUser';
+import { userByIdHandlers } from './handlers/userById';
 
 const PORT = process.env.PORT || 4000;
 const db = new Database();
@@ -14,6 +15,10 @@ const routes: Route[] = [
   }),
 
   new Route('/api/users', 'GET', (_, response: http.ServerResponse) => usersHandlers(response, db)),
+
+  new Route('/api/users', 'POST', (request: http.IncomingMessage, response: http.ServerResponse) =>
+    createUser(request, response, db),
+  ),
 
   new Route('/api/users/:id', 'GET', (_, response: http.ServerResponse, params: string) =>
     userByIdHandlers(response, params, db),

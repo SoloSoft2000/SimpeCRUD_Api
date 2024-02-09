@@ -7,10 +7,11 @@ export const userByIdHandlers = (response: http.ServerResponse, params: string, 
     if (user) {
       response.writeHead(200, { 'Content-Type': 'application/json' });
       response.end(JSON.stringify(user));
+    } else {
+      response.writeHead(404, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ message: "User doesn't exist" }));
     }
-    response.writeHead(404, { 'Content-Type': 'application/json' });
-    response.end(JSON.stringify({ message: "User doesn't exist" }));
-  } catch (error) {
+  } catch {
     response.writeHead(400, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify({ message: 'Id is invalid' }));
   }

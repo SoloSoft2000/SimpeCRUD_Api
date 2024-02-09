@@ -33,4 +33,17 @@ export class Database {
     this.users.push(newUser);
     return newUser;
   }
+
+  deleteById(userId: string): boolean {
+    if (!validate(userId)) {
+      throw new Error('Invalid userId');
+    }
+    const idx = this.users.findIndex((user) => user.id === userId);
+    if (idx === -1) {
+      return false;
+    } else {
+      this.users.splice(idx, 1);
+      return true;
+    }
+  }
 }

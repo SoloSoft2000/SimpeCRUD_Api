@@ -12,10 +12,6 @@ const PORT = process.env.PORT || 4000;
 const db = new Database();
 
 const routes: Route[] = [
-  new Route('/', 'GET', (_, response: http.ServerResponse) => {
-    response.writeHead(200, { 'Content-Type': 'application/json' });
-    response.end('Hello World');
-  }),
 
   new Route('/api/users', 'GET', (_, response: http.ServerResponse) => usersHandlers(response, db)),
 
@@ -37,12 +33,19 @@ const routes: Route[] = [
 ];
 
 const server: http.Server = http.createServer((request: http.IncomingMessage, response: http.ServerResponse) => {
-  const matchingRoute: Route | undefined = routes.find((route) => route.match(request));
-  if (matchingRoute) {
-    matchingRoute.handle(request, response);
-  } else {
-    response.statusCode = 404;
-    response.end('Not found');
+  try {
+    const matchingRoute: Route | undefined = routes.find((route) => route.match(request));
+    if (matchingRoute) {
+      matchingRoute.handle(request, response);
+    } else {
+      // Next line for test 'Internal Server Error'
+      // if (Math.random() > 0.5) throw new Error('Generated Error');
+      response.writeHead(404, { 'Content-Type': 'application/json' });
+      response.end(JSON.stringify({ message: 'Endpoint doesn\'t exist' }));
+    }
+  } catch {
+    response.writeHead(500, { 'Content-Type': 'application/json' });
+    response.end(JSON.stringify({ message: 'Internal Server Error' }));
   }
 });
 

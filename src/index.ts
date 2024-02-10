@@ -12,7 +12,6 @@ const PORT = process.env.PORT || 4000;
 const db = new Database();
 
 const routes: Route[] = [
-
   new Route('/api/users', 'GET', (_, response: http.ServerResponse) => usersHandlers(response, db)),
 
   new Route('/api/users', 'POST', (request: http.IncomingMessage, response: http.ServerResponse) =>
@@ -41,7 +40,7 @@ const server: http.Server = http.createServer((request: http.IncomingMessage, re
       // Next line for test 'Internal Server Error'
       // if (Math.random() > 0.5) throw new Error('Generated Error');
       response.writeHead(404, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify({ message: 'Endpoint doesn\'t exist' }));
+      response.end(JSON.stringify({ message: "Endpoint doesn't exist" }));
     }
   } catch {
     response.writeHead(500, { 'Content-Type': 'application/json' });

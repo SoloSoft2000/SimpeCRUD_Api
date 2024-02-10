@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import http from 'http';
 import { Database } from './utils/Database';
 import { Route } from './utils/Route';

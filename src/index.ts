@@ -13,19 +13,15 @@ const db = new Database();
 
 const routes: Route[] = [
   new Route('/api/users', 'GET', (_, response: http.ServerResponse) => usersHandlers(response, db)),
-
   new Route('/api/users', 'POST', (request: http.IncomingMessage, response: http.ServerResponse) =>
     createUser(request, response, db),
   ),
-
   new Route('/api/users/:id', 'PUT', (request: http.IncomingMessage, response: http.ServerResponse, params: string) =>
     updateUser(request, response, params, db),
   ),
-
   new Route('/api/users/:id', 'GET', (_, response: http.ServerResponse, params: string) =>
     userByIdHandlers(response, params, db),
   ),
-
   new Route('/api/users/:id', 'DELETE', (_, response: http.ServerResponse, params: string) =>
     deleteUser(response, params, db),
   ),

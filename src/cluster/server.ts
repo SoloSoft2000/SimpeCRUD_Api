@@ -11,6 +11,8 @@ import { Database, User } from '../utils/Database';
 const numCPUs = availableParallelism();
 const PORT = process.env.PORT || 4000;
 
+let currentWorkerIdx = 0;
+
 if (cluster.isPrimary) {
   console.log(`Primary ${process.pid} is running`);
 
@@ -35,7 +37,20 @@ if (cluster.isPrimary) {
     console.log(`worker ${worker.process.pid} died`);
   });
 
-  
+  const masterServer = http.createServer(() => {
+    const workerIds = Object.keys(cluster.workers);
+    console.log('ids',  workerIds);
+    const selectedWorker = cluster.workers[workerIds[currentWorkerIdx]];
+    currentWorkerIdx++;
+    if (currentWorkerIdx === numCPUs) {
+      currentWorkerIdx = 0;
+    }
+    
+    selectedWorker.send({ command: 'forwardReq' })
+  })
+    masterServer.listen(Number(PORT), () => {
+      console.log(`Master ${process.pid} listening on port ${Number(PORT)}`);
+    });
 } else {
   console.log(`Worker ${process.pid} started`);
 
@@ -59,17 +74,21 @@ if (cluster.isPrimary) {
     console.log(`Worker ${process.pid} listening on port ${Number(PORT) + cluster.worker.id}`);
   })
 
-  process.on('message', (msg: {users? : User[], user?: User, requestId: string}) => {
-    const response = requests[msg.requestId];
-    if (msg.users) {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify(msg.users));
-      return;
-    }
-    if (msg.user) {
-      response.writeHead(200, { 'Content-Type': 'application/json' });
-      response.end(JSON.stringify(msg.user));
-      return;
+  process.on('message', (msg: {command?: string, req?: http.IncomingMessage, res?: http.ServerResponse, users? : User[], user?: User, requestId: string}) => {
+    if (msg.command) {
+      console.log(msg.req, msg.res);
+    } else {
+      const response = requests[msg.requestId];
+      if (msg.users) {
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(msg.users));
+        return;
+      }
+      if (msg.user) {
+        response.writeHead(200, { 'Content-Type': 'application/json' });
+        response.end(JSON.stringify(msg.user));
+        return;
+      }
     }
   })
 }

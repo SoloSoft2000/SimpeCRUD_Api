@@ -21,7 +21,7 @@ if (cluster.isPrimary) {
     const worker = cluster.fork();
 
     worker.on('message', (msg) => {
-      console.log(`Master received message from worker: ${JSON.stringify(msg)}`);
+      console.log(`Master received message from worker: ${worker.id}`);
       if (msg.command === 'getUsers') {
         worker.send({ users: db.getUsers(), requestId: msg.requestId })
       }
@@ -34,6 +34,8 @@ if (cluster.isPrimary) {
   cluster.on('exit', (worker) => {
     console.log(`worker ${worker.process.pid} died`);
   });
+
+  
 } else {
   console.log(`Worker ${process.pid} started`);
 

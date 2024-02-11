@@ -6,7 +6,9 @@ export const usersHandlers = (response: http.ServerResponse, db: Database): void
     const users = db.getUsers();
     response.writeHead(200, { 'Content-Type': 'application/json' });
     response.end(JSON.stringify(users));
-  } catch {
+  } catch (error) {
+    console.log(error.message);
+    
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end('Error in DB');
   }

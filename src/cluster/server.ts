@@ -23,20 +23,23 @@ if (cluster.isPrimary) {
 
   const databaseProcess = fork('./dist/cluster/databaseProcess.js');
 
-  databaseProcess.on('message', (msg: { workerId: string; result; responseId: string }) => {
+  databaseProcess.on('message', (msg: { action, workerId,  result, responseId }) => {
+    console.log(msg.action, msg.result);
+    
     cluster.workers[msg.workerId].send({ command: 'responseDB', result: msg.result, responseId: msg.responseId });
   });
 
   for (const id in cluster.workers) {
     cluster.workers[id].on(
       'message',
-      (msg: { reqToBD?: boolean; action?: string; responseId: string; userData?: string; data }) => {
+      (msg: { reqToBD?; action?; responseId; userData?; data?, userId? }) => {
         if (msg.reqToBD) {
           databaseProcess.send({
             action: msg.action,
             workerId: id,
             responseId: msg.responseId,
             userData: msg.userData,
+            userId: msg.userId
           });
           return;
         }

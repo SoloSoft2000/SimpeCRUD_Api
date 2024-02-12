@@ -14,10 +14,10 @@ export const primaryServer = (responses, numCPUs): http.Server => {
     if (currentWorkerIdx === numCPUs) {
       currentWorkerIdx = 0;
     }
-    if (req.method === 'GET') {
+    if ((req.method === 'GET' || req.method === 'DELETE') && req.url.startsWith('/api/users')) {
       const request = { url: req.url, method: req.method };
       selectedWorker.send({ command: 'forward', request, responseId: currRes });
-    } else {
+    } else if ((req.method === 'POST' || req.method === 'PUT') && req.url.startsWith('/api/users')) {
       let requestBody = '';
       req.on('data', (chunk) => {
         requestBody += chunk;
@@ -26,6 +26,9 @@ export const primaryServer = (responses, numCPUs): http.Server => {
         const request = { url: req.url, method: req.method, body: requestBody };
         selectedWorker.send({ command: 'forward', request, responseId: currRes });
       });
+    } else {
+      res.writeHead(404, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ message: "Endpoint doesn't exist" }));
     }
   });
 };

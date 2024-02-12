@@ -15,13 +15,9 @@ export const updateUser = (
     try {
       const { username, age, hobbies } = JSON.parse(requestBody);
       const updatedFields: Partial<User> = {};
-      if (username) {
+      if (username && age && typeof(age) === 'number' && hobbies && Array.isArray(hobbies)) {
         updatedFields.username = username;
-      }
-      if (age) {
         updatedFields.age = age;
-      }
-      if (hobbies && Array.isArray(hobbies)) {
         updatedFields.hobbies = hobbies;
       }
 

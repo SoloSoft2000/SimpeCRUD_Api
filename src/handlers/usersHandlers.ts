@@ -8,7 +8,7 @@ export const usersHandlers = (response: http.ServerResponse, db: Database): void
     response.end(JSON.stringify(users));
   } catch (error) {
     console.log(error.message);
-    
+
     response.writeHead(404, { 'Content-Type': 'application/json' });
     response.end('Error in DB');
   }

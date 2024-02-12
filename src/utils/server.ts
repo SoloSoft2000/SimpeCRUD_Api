@@ -1,5 +1,5 @@
-import http from "http";
-import { Route } from "./Route";
+import http from 'http';
+import { Route } from './Route';
 
 export const getServer = (routes: Route[]): http.Server => {
   return http.createServer((request: http.IncomingMessage, response: http.ServerResponse) => {
@@ -18,4 +18,4 @@ export const getServer = (routes: Route[]): http.Server => {
       response.end(JSON.stringify({ message: 'Internal Server Error' }));
     }
   });
-}
+};

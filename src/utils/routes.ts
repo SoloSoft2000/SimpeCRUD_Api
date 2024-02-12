@@ -1,12 +1,11 @@
-import { Route } from "./Route";
+import { Route } from './Route';
 import http from 'http';
 import { usersHandlers } from '../handlers/usersHandlers';
 import { createUser } from '../handlers/createUser';
 import { userByIdHandlers } from '../handlers/userById';
 import { deleteUser } from '../handlers/deleteUser';
 import { updateUser } from '../handlers/updateUser';
-import { Database } from "./Database";
-
+import { Database } from './Database';
 
 export const getRoutes = (db: Database): Route[] => {
   return [
@@ -23,5 +22,5 @@ export const getRoutes = (db: Database): Route[] => {
     new Route('/api/users/:id', 'DELETE', (_, response: http.ServerResponse, params: string) =>
       deleteUser(response, params, db),
     ),
-  ]
+  ];
 };

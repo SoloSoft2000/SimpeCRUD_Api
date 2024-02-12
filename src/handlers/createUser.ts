@@ -9,7 +9,7 @@ export const createUser = (request: http.IncomingMessage, response: http.ServerR
   request.on('end', () => {
     try {
       const { username, age, hobbies } = JSON.parse(requestBody);
-      if (!username || !age || !hobbies) {
+      if (!username || (!age || typeof(age) !== 'number') || (!hobbies || !Array.isArray(hobbies))) {
         response.writeHead(400, { 'Content-Type': 'application/json' });
         response.end(JSON.stringify({ message: 'Username, age, and hobbies (array) are required' }));
       } else {
